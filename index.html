@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Rutina de fuerza</title>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Rutina">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#18222D">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Ctext y=%22.9em%22 font-size=%2290%22%3E%F0%9F%8F%8B%EF%B8%8F%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#EDF0F3; --surface:#FFFFFF; --ink:#18222D; --muted:#5D6875; --line:#D3D9E0;
+  --red:#C8302C; --blue:#1F5FA8; --yellow:#E3A900; --green:#24865A; --white:#FFFFFF;
+  --on-day:#FFFFFF;
+  --f-head:"Barlow Condensed","Arial Narrow",system-ui,sans-serif;
+  --f-body:"Barlow",system-ui,-apple-system,"Segoe UI",sans-serif;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+  color-scheme:light dark;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#10161C; --surface:#18212A; --ink:#E8EDF2; --muted:#93A0AD; --line:#2A3540;
+    --red:#E0473F; --blue:#4A8BD6; --yellow:#F0BD1C; --green:#3BA872; --white:#F4F6F8;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#10161C; --surface:#18212A; --ink:#E8EDF2; --muted:#93A0AD; --line:#2A3540;
+  --red:#E0473F; --blue:#4A8BD6; --yellow:#F0BD1C; --green:#3BA872; --white:#F4F6F8;
+}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*,*::before,*::after{box-sizing:inherit}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.45;-webkit-text-size-adjust:100%}
+button,input{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:3px solid var(--blue);outline-offset:2px}
+.wrap{max-width:560px;margin:0 auto;padding:0 16px 120px}
+
+.d0{--day:var(--red)} .d1{--day:var(--blue)} .d2{--day:var(--yellow);--on-day:#18222D}
+.d3{--day:var(--green)} .d4{--day:var(--white);--on-day:#18222D}
+
+header.top{padding:20px 0 8px}
+.weekline{display:flex;align-items:center;gap:12px}
+.weekline h1{font-family:var(--f-head);font-weight:700;font-size:44px;line-height:1;margin:0;letter-spacing:.01em}
+.weekline h1 small{font-size:22px;color:var(--muted);font-weight:600}
+.weekline .nav{margin-left:auto;display:flex;gap:8px}
+.iconbtn{width:44px;height:44px;border-radius:50%;border:1px solid var(--line);background:var(--surface);font-size:22px;line-height:1;display:grid;place-items:center}
+.iconbtn:disabled{opacity:.35;cursor:default}
+.phase{margin:6px 0 0;color:var(--muted)}
+.phase strong{color:var(--ink);font-weight:600}
+
+.days{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin:16px 0 4px}
+.day{border:1px solid var(--line);background:var(--surface);border-radius:10px;padding:8px 0 6px;font-family:var(--f-head);font-weight:600;font-size:18px;position:relative}
+.day .bar{display:block;height:4px;margin:6px 10px 0;border-radius:2px;background:var(--line);overflow:hidden}
+.day .bar i{display:block;height:100%;background:var(--day);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--ink) 25%,transparent)}
+.day[aria-selected="true"]{background:var(--day);color:var(--on-day);border-color:var(--day)}
+.d4.day[aria-selected="true"]{border-color:var(--ink)}
+.day[aria-selected="true"] .bar{background:color-mix(in srgb,var(--on-day) 30%,transparent)}
+.day[aria-selected="true"] .bar i{background:var(--on-day);box-shadow:none}
+
+.dayhead{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin:18px 0 10px}
+.dayhead h2{font-family:var(--f-head);font-size:28px;margin:0;font-weight:700;line-height:1.1}
+.dayhead span{color:var(--muted);font-size:15px;white-space:nowrap}
+
+.ex{background:var(--surface);border:1px solid var(--line);border-left:6px solid var(--day);border-radius:12px;padding:14px 14px 12px;margin-bottom:10px}
+.d4 .ex,.ex.d4{border-left-color:var(--ink)}
+.ex h3{margin:0;font-size:18px;font-weight:600;line-height:1.25}
+.rx{margin:2px 0 0;font-family:var(--f-head);font-size:20px;font-weight:600}
+.hint{margin:4px 0 0;font-size:14px;color:var(--muted)}
+.hint.up{color:var(--ink);font-weight:600}
+.hint.up::before{content:"▲ ";color:var(--green)}
+.row{display:flex;flex-wrap:wrap;align-items:center;gap:10px 14px;margin-top:12px}
+.plates{display:flex;gap:8px;flex-wrap:wrap}
+.plate{width:40px;height:40px;border-radius:50%;border:2px solid var(--line);background:transparent;position:relative;padding:0}
+.plate::after{content:"";position:absolute;inset:13px;border-radius:50%;border:2px solid var(--line)}
+.plate[aria-pressed="true"]{background:var(--day);border-color:var(--day)}
+.d4 .plate[aria-pressed="true"]{border-color:var(--ink)}
+.plate[aria-pressed="true"]::after{border-color:color-mix(in srgb,var(--on-day) 55%,transparent);background:var(--bg)}
+.plate span{position:absolute;inset:0;display:grid;place-items:center;font-size:12px;font-weight:600;color:var(--muted)}
+.plate[aria-pressed="true"] span{opacity:0}
+.fields{display:flex;gap:8px;margin-left:auto}
+.field{display:flex;align-items:center;border:1px solid var(--line);border-radius:8px;background:var(--bg);overflow:hidden}
+.field input{width:64px;border:0;background:transparent;padding:9px 4px 9px 10px;font-size:16px;font-weight:600}
+.field input::placeholder{color:var(--muted);font-weight:400}
+.field span{padding-right:9px;color:var(--muted);font-size:13px}
+@media (max-width:380px){.fields{margin-left:0}}
+
+.status{margin:18px 0 0;font-size:14px;color:var(--muted)}
+
+nav.tabs{position:fixed;left:0;right:0;bottom:0;background:var(--surface);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom,0px);z-index:5}
+nav.tabs div{max-width:560px;margin:0 auto;display:grid;grid-template-columns:repeat(3,1fr)}
+nav.tabs button{border:0;background:none;padding:12px 0 14px;font-weight:600;color:var(--muted)}
+nav.tabs button[aria-current="page"]{color:var(--ink);box-shadow:inset 0 3px 0 var(--ink)}
+
+.prose h2{font-family:var(--f-head);font-size:28px;margin:20px 0 6px}
+.prose h3{font-size:17px;margin:18px 0 4px}
+.prose p,.prose li{margin:0 0 8px;max-width:68ch}
+.prose ul{padding-left:20px;margin:0}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px;margin:12px 0}
+table.weeks{width:100%;border-collapse:collapse}
+table.weeks td,table.weeks th{padding:8px 4px;text-align:center;border-bottom:1px solid var(--line);font-size:14px}
+table.weeks th{color:var(--muted);font-weight:500}
+table.weeks td:first-child,table.weeks th:first-child{text-align:left}
+table.weeks button{border:0;background:none;padding:0;font-weight:600;text-decoration:underline;text-underline-offset:3px}
+.pct{display:inline-block;width:26px;height:26px;border-radius:50%;border:2px solid var(--line);vertical-align:middle}
+.btn{display:block;width:100%;border:0;border-radius:10px;padding:13px 16px;font-weight:600;background:var(--ink);color:var(--bg);margin-top:10px}
+.btn.ghost{background:transparent;color:var(--ink);border:1px solid var(--line)}
+textarea{width:100%;min-height:160px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink);padding:10px;font:14px/1.4 var(--f-body);margin-top:10px}
+.msg{font-size:14px;margin:8px 0 0;color:var(--muted)}
+@media (prefers-reduced-motion:no-preference){.plate{transition:background-color .12s,border-color .12s}}
+</style>
+</head>
+<body>
+<div class="wrap" id="app"></div>
+<nav class="tabs" aria-label="Secciones"><div>
+  <button data-view="rutina" aria-current="page">Rutina</button>
+  <button data-view="avance">Avance</button>
+  <button data-view="guia">Guía</button>
+</div></nav>
+
+<script>
+(function(){
+"use strict";
+
+/* ---------- Plan ---------- */
+const WEEKS = 8;
+const PHASE = [
+  {rir:"RIR 3", txt:"Deja 3 repeticiones en reserva."},
+  {rir:"RIR 2", txt:"Sube 2,5 kg en los básicos. Deja 2 en reserva."},
+  {rir:"RIR 1", txt:"Sube 2,5 kg en los básicos. Deja 1 en reserva."},
+  {rir:"Descarga", txt:"Mitad de las series y 10% menos de peso."}
+];
+const DAYS = [
+  {short:"Lun", name:"Lunes", title:"Cuádriceps"},
+  {short:"Mar", name:"Martes", title:"Espalda, pecho y bíceps"},
+  {short:"Mié", name:"Miércoles", title:"Glúteo y femoral"},
+  {short:"Jue", name:"Jueves", title:"Hombro, tríceps y pecho"},
+  {short:"Vie", name:"Viernes", title:"Cuerpo completo"}
+];
+// type: main (bloques), acc (doble progresión), rounds (sin peso), cardio
+const R = [
+ [
+  {id:"sq", name:"Sentadilla trasera", type:"main", blocks:[{sets:4,reps:8,kg:[52.5,55,57.5]},{sets:4,reps:6,kg:[60,62.5,65]}], note:"Antes, 2 o 3 series ligeras de calentamiento. No cuentan."},
+  {id:"pr", name:"Prensa", type:"acc", sets:3, lo:10, hi:12},
+  {id:"lu", name:"Zancadas con mancuerna", type:"acc", sets:3, lo:8, hi:10, per:"por pierna"},
+  {id:"ext", name:"Extensión de cuádriceps", type:"acc", sets:3, lo:12, hi:15},
+  {id:"lc", name:"Curl femoral", type:"acc", sets:3, lo:10, hi:12},
+  {id:"abs", name:"Abdominales", type:"rounds", sets:2, desc:"2 rondas"},
+  {id:"walk", name:"Caminata inclinada", type:"cardio", desc:"10 min"}
+ ],[
+  {id:"lat", name:"Jalón al pecho", type:"acc", sets:4, lo:8, hi:12},
+  {id:"chp", name:"Press de pecho (mancuernas o máquina)", type:"acc", sets:4, lo:8, hi:12},
+  {id:"row", name:"Remo en polea o máquina", type:"acc", sets:3, lo:8, hi:12},
+  {id:"row1", name:"Remo a una mano", type:"acc", sets:3, lo:10, hi:12, per:"por brazo"},
+  {id:"fly", name:"Aperturas", type:"acc", sets:3, lo:12, hi:15},
+  {id:"bic", name:"Curl de bíceps", type:"acc", sets:3, lo:10, hi:12, note:"Última serie en drop."},
+  {id:"ham", name:"Curl martillo", type:"acc", sets:3, lo:10, hi:12},
+  {id:"jog", name:"Trote", type:"cardio", desc:"10 min"}
+ ],[
+  {id:"ht", name:"Hip thrust", type:"main", blocks:[{sets:4,reps:10,kg:[80,85,90]},{sets:4,reps:8,kg:[90,95,100]}], note:"Peso total, con la barra incluida."},
+  {id:"rdl", name:"Peso muerto rumano", type:"acc", sets:3, lo:8, hi:10},
+  {id:"bul", name:"Sentadilla búlgara", type:"acc", sets:3, lo:8, hi:10, per:"por pierna"},
+  {id:"lc2", name:"Curl femoral", type:"acc", sets:3, lo:10, hi:12},
+  {id:"abd", name:"Abductores", type:"acc", sets:3, lo:15, hi:20, note:"Última serie en drop."},
+  {id:"abs2", name:"Abdominales", type:"rounds", sets:2, desc:"2 rondas"}
+ ],[
+  {id:"ohp", name:"Press militar con mancuernas", type:"acc", sets:4, lo:6, hi:10},
+  {id:"inc", name:"Press inclinado con mancuernas", type:"acc", sets:3, lo:8, hi:12},
+  {id:"lr", name:"Elevaciones laterales", type:"acc", sets:4, lo:12, hi:15},
+  {id:"rd", name:"Hombro posterior en polea", type:"acc", sets:3, lo:12, hi:15},
+  {id:"tp", name:"Tríceps en polea", type:"acc", sets:3, lo:10, hi:12},
+  {id:"toh", name:"Extensión de tríceps sobre la cabeza", type:"acc", sets:3, lo:10, hi:12},
+  {id:"walk2", name:"Caminata inclinada", type:"cardio", desc:"10 min"}
+ ],[
+  {id:"dl", name:"Peso muerto convencional", type:"acc", sets:3, lo:5, hi:5, note:"Empieza con 10% menos de lo que usas hoy. Sube 2,5 kg cuando las 3 series salen con RIR 2."},
+  {id:"prh", name:"Prensa con pies altos", type:"acc", sets:3, lo:12, hi:15},
+  {id:"pull", name:"Jalón o remo", type:"acc", sets:3, lo:10, hi:12},
+  {id:"chp2", name:"Press de pecho", type:"acc", sets:3, lo:10, hi:12},
+  {id:"add", name:"Aductores", type:"acc", sets:3, lo:15, hi:20},
+  {id:"abs3", name:"Abdominales", type:"rounds", sets:3, desc:"3 rondas"},
+  {id:"tm", name:"Caminadora", type:"cardio", desc:"a gusto"}
+ ]
+];
+
+/* ---------- Helpers ---------- */
+const $ = s => document.querySelector(s);
+const fmt = n => String(Math.round(n*10)/10).replace(".", ",");
+const esc = s => String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const isDeload = w => (w - 1) % 4 === 3;
+const blockOf = w => w <= 4 ? 0 : 1;
+const round25 = n => Math.round(n / 2.5) * 2.5;
+
+/* ---------- State ---------- */
+const LS = "rutina-fuerza-v1";
+let S = {cycle:1, entries:{}};
+let UI = {week:1, day:0, view:"rutina"};
+try {
+  const raw = localStorage.getItem(LS);
+  if (raw) { const p = JSON.parse(raw); if (p && p.S) S = p.S; if (p && p.UI) UI = Object.assign(UI, p.UI); }
+} catch (e) {}
+UI.view = "rutina";
+if (!S.entries) S.entries = {};
+function persist(){ try { localStorage.setItem(LS, JSON.stringify({S, UI})); } catch (e) {} }
+
+const key = (c,w,d,id) => `c${c}w${w}d${d}-${id}`;
+function prescription(ex, w){
+  const dl = isDeload(w);
+  if (ex.type === "main"){
+    const b = ex.blocks[blockOf(w)], plus = (S.cycle - 1) * 5;
+    if (dl) return {sets:2, txt:`2 x ${b.reps} con ${fmt(round25(b.kg[2]*0.9)+plus)} kg`, kg:round25(b.kg[2]*0.9)+plus};
+    const kg = b.kg[(w-1)%4] + plus;
+    return {sets:b.sets, txt:`${b.sets} x ${b.reps} con ${fmt(kg)} kg`, kg};
+  }
+  if (ex.type === "acc"){
+    const sets = dl ? Math.ceil(ex.sets/2) : ex.sets;
+    const reps = ex.lo === ex.hi ? `${ex.lo}` : `${ex.lo} a ${ex.hi}`;
+    return {sets, txt:`${sets} x ${reps}${ex.per ? " " + ex.per : ""}`};
+  }
+  if (ex.type === "rounds") return {sets: dl ? Math.ceil(ex.sets/2) : ex.sets, txt: ex.desc};
+  return {sets:1, txt:ex.desc};
+}
+function entry(w,d,id){ return S.entries[key(S.cycle,w,d,id)]; }
+function previous(ex, w, d){
+  // most recent earlier record of the same exercise id in this cycle or earlier
+  let best = null, bestOrder = -1;
+  const cur = (S.cycle*100 + w)*10 + d;
+  for (const k in S.entries){
+    const m = /^c(\d+)w(\d+)d(\d)-(.+)$/.exec(k);
+    if (!m || m[4] !== ex.id) continue;
+    const o = (+m[1]*100 + +m[2])*10 + +m[3];
+    const e = S.entries[k];
+    if (o < cur && o > bestOrder && (e.kg || e.r)) { best = e; bestOrder = o; }
+  }
+  return best;
+}
+function dayTotals(w,d){
+  let done = 0, total = 0;
+  for (const ex of R[d]){
+    const p = prescription(ex, w); total += p.sets;
+    const e = entry(w,d,ex.id);
+    if (e && e.s) done += e.s.slice(0,p.sets).filter(Boolean).length;
+  }
+  return {done, total};
+}
+
+/* ---------- Render ---------- */
+let pendingRender = false;
+function safeRender(){
+  const a = document.activeElement;
+  if (a && (a.tagName === "INPUT" || a.tagName === "TEXTAREA") && $("#app").contains(a)) { pendingRender = true; return; }
+  render();
+}
+document.addEventListener("focusout", () => { if (pendingRender) { pendingRender = false; setTimeout(render, 0); } });
+
+function render(){
+  document.querySelectorAll("nav.tabs button").forEach(b => {
+    if (b.dataset.view === UI.view) b.setAttribute("aria-current","page"); else b.removeAttribute("aria-current");
+  });
+  const app = $("#app");
+  if (UI.view === "guia") app.innerHTML = guideHTML();
+  else if (UI.view === "avance") app.innerHTML = progressHTML();
+  else app.innerHTML = routineHTML();
+}
+
+function headerHTML(){
+  const w = UI.week, ph = PHASE[(w-1)%4];
+  const cyc = S.cycle > 1 ? `Ciclo ${S.cycle}. ` : "";
+  return `<header class="top">
+    <div class="weekline">
+      <h1>Semana ${w} <small>de ${WEEKS}</small></h1>
+      <div class="nav">
+        <button class="iconbtn" data-act="prev" aria-label="Semana anterior" ${w<=1?"disabled":""}>‹</button>
+        <button class="iconbtn" data-act="next" aria-label="Semana siguiente" ${w>=WEEKS?"disabled":""}>›</button>
+      </div>
+    </div>
+    <p class="phase">${cyc}Bloque ${blockOf(w)+1}. <strong>${ph.rir}.</strong> ${ph.txt}</p>
+  </header>`;
+}
+
+function routineHTML(){
+  const w = UI.week, d = UI.day;
+  let tabs = `<div class="days" role="tablist" aria-label="Días">`;
+  DAYS.forEach((day,i) => {
+    const t = dayTotals(w,i), pct = t.total ? Math.round(t.done/t.total*100) : 0;
+    tabs += `<button class="day d${i}" role="tab" aria-selected="${i===d}" data-day="${i}" aria-label="${day.name}, ${pct}% hecho">${day.short}<span class="bar"><i style="width:${pct}%"></i></span></button>`;
+  });
+  tabs += `</div>`;
+  const t = dayTotals(w,d);
+  let list = `<div class="d${d}"><div class="dayhead"><h2>${DAYS[d].title}</h2><span>${t.done} de ${t.total} series</span></div>`;
+  for (const ex of R[d]){
+    const p = prescription(ex, w), e = entry(w,d,ex.id) || {};
+    const s = e.s || [];
+    let plates = "";
+    for (let i=0;i<p.sets;i++){
+      const on = !!s[i];
+      plates += `<button class="plate" data-ex="${ex.id}" data-i="${i}" aria-pressed="${on}" aria-label="${ex.type==="cardio"?"Hecho":"Serie "+(i+1)}">${ex.type==="cardio"?"":`<span>${i+1}</span>`}</button>`;
+    }
+    let hint = "";
+    if (ex.type === "main"){
+      hint = `<p class="hint">${ex.note}${isDeload(w) ? "" : " Si no salen las reps con este peso, baja 2,5 kg."}</p>`;
+    } else if (ex.type === "acc"){
+      const prev = previous(ex, w, d);
+      const parts = [];
+      if (ex.note) parts.push(`<p class="hint">${ex.note}</p>`);
+      if (isDeload(w)) parts.push(`<p class="hint">Descarga: usa 10% menos de peso.</p>`);
+      else if (prev){
+        const reps = parseInt(prev.r, 10), allDone = prev.s && prev.s.length && prev.s.every(Boolean);
+        const last = `Última vez: ${esc(prev.kg || "?")} x ${esc(prev.r || "?")}.`;
+        if (allDone && reps >= ex.hi) parts.push(`<p class="hint up">${last} Sube el peso hoy y vuelve a ${ex.lo} reps.</p>`);
+        else parts.push(`<p class="hint">${last}</p>`);
+      }
+      hint = parts.join("");
+    }
+    const fields = (ex.type === "main" || ex.type === "acc") ? `<div class="fields">
+        <label class="field"><input inputmode="decimal" data-ex="${ex.id}" data-f="kg" value="${esc(e.kg||"")}" placeholder="${p.kg ? fmt(p.kg) : ""}" aria-label="Peso de ${esc(ex.name)}"><span>peso</span></label>
+        <label class="field"><input inputmode="numeric" data-ex="${ex.id}" data-f="r" value="${esc(e.r||"")}" aria-label="Repeticiones de la última serie de ${esc(ex.name)}"><span>reps</span></label>
+      </div>` : "";
+    list += `<article class="ex">
+      <h3>${ex.name}</h3>
+      <p class="rx">${p.txt}</p>
+      ${hint}
+      <div class="row"><div class="plates">${plates}</div>${fields}</div>
+    </article>`;
+  }
+  list += `</div><p class="status" id="status">${statusText()}</p>`;
+  return headerHTML() + tabs + list;
+}
+
+function progressHTML(){
+  let rows = "";
+  for (let w=1; w<=WEEKS; w++){
+    let cells = "";
+    for (let d=0; d<5; d++){
+      const t = dayTotals(w,d), pct = t.total ? t.done/t.total : 0;
+      const deg = Math.round(pct*360);
+      cells += `<td><span class="pct" style="background:conic-gradient(var(--ink) ${deg}deg, transparent 0)" aria-label="${DAYS[d].name}: ${Math.round(pct*100)}%"></span></td>`;
+    }
+    rows += `<tr><td><button data-goto="${w}">Sem ${w}</button>${isDeload(w)?" <small>(desc.)</small>":""}</td>${cells}</tr>`;
+  }
+  const canDl = true;
+  return `<div class="prose">
+    <h2>Avance${S.cycle>1?` del ciclo ${S.cycle}`:""}</h2>
+    <div class="card"><table class="weeks"><thead><tr><th>Semana</th>${DAYS.map(d=>`<th>${d.short}</th>`).join("")}</tr></thead><tbody>${rows}</tbody></table></div>
+    <h3>Exportar</h3>
+    <p>El archivo tiene cada serie marcada, el peso y las reps, con fecha.</p>
+    ${canDl ? `<button class="btn" data-act="csv">Descargar registro (CSV)</button>` : ""}
+    <button class="btn ${canDl?"ghost":""}" data-act="copy">Copiar resumen de la semana ${UI.week}</button>
+    <p class="msg" id="exportmsg" role="status"></p>
+    <div id="copybox"></div>
+    <h3>Pasar el avance a otro teléfono</h3>
+    <p>Toca Copiar código y mándalo por WhatsApp. En el otro teléfono, abre esta página, pega el código abajo y toca Cargar avance.</p>
+    <button class="btn ghost" data-act="code">Copiar código de avance</button>
+    <textarea id="importbox" placeholder="Pega aquí el código" aria-label="Código de avance"></textarea>
+    <button class="btn ghost" data-act="import">Cargar avance</button>
+    <p class="msg" id="importmsg" role="status"></p>
+    <h3>Después de la semana 8</h3>
+    <p>Empieza un ciclo nuevo. Sentadilla y hip thrust arrancan 5 kg más arriba. El registro anterior se conserva en el CSV.</p>
+    <button class="btn ghost" data-act="cycle">Empezar ciclo ${S.cycle+1}</button>
+    <p class="status">${statusText()}</p>
+  </div>`;
+}
+
+function guideHTML(){
+  return `<div class="prose">
+    <h2>Cómo usarla</h2>
+    <p>Elige la semana arriba y el día. Toca un disco cuando terminas una serie. Anota el peso y las reps de la última serie.</p>
+    <p>El peso puede ser en kg o en barritas de la máquina. Usa siempre la misma unidad en cada ejercicio.</p>
+    <h3>Qué es RIR</h3>
+    <p>RIR son las repeticiones en reserva. RIR 2 quiere decir que terminas la serie y podrías hacer 2 más con buena técnica.</p>
+    <h3>Sentadilla y hip thrust</h3>
+    <p>Siguen bloques de 4 semanas. En las semanas 1 a 3 el peso sube 2,5 kg por semana. La semana 4 es descarga. El bloque 2 (semanas 5 a 8) usa menos reps y más peso. La app muestra el peso de cada semana. Si las reps no salen, baja 2,5 kg.</p>
+    <h3>Todo lo demás</h3>
+    <p>Cada ejercicio tiene un rango, por ejemplo 8 a 12. Cuando completas todas las series con el número alto, sube lo mínimo posible (1 barrita o 1 a 2 kg) y vuelve al número bajo. La app te avisa con un ▲.</p>
+    <h3>Descarga</h3>
+    <p>En las semanas 4 y 8 haces la mitad de las series con 10% menos de peso. Sirve para recuperar.</p>
+    <h3>Para que funcione</h3>
+    <ul>
+      <li>Descansa 2 a 3 min en los básicos y 60 a 90 s en el resto.</li>
+      <li>Si no te da el tiempo, recorta abdominales y cardio. Nunca el primer ejercicio.</li>
+      <li>Si algo duele (dolor, no cansancio), cambia ese ejercicio por otro del mismo músculo.</li>
+    </ul>
+  </div>`;
+}
+
+/* ---------- Interaction ---------- */
+function touch(id){
+  const k = key(S.cycle, UI.week, UI.day, id);
+  const e = S.entries[k] || {s:[], kg:"", r:""};
+  S.entries[k] = e;
+  return e;
+}
+function changed(){ persist(); scheduleSync(); }
+
+document.addEventListener("click", ev => {
+  const nav = ev.target.closest("nav.tabs button");
+  if (nav){ UI.view = nav.dataset.view; persist(); render(); window.scrollTo(0,0); return; }
+  const plate = ev.target.closest(".plate");
+  if (plate){
+    const ex = R[UI.day].find(x => x.id === plate.dataset.ex);
+    const n = prescription(ex, UI.week).sets;
+    const e = touch(plate.dataset.ex), i = +plate.dataset.i;
+    while (e.s.length < n) e.s.push(0);
+    e.s[i] = e.s[i] ? 0 : 1; e.t = Date.now();
+    plate.setAttribute("aria-pressed", String(!!e.s[i]));
+    changed();
+    const t = dayTotals(UI.week, UI.day), pct = t.total ? Math.round(t.done/t.total*100) : 0;
+    const head = document.querySelector(".dayhead span"); if (head) head.textContent = `${t.done} de ${t.total} series`;
+    const bar = document.querySelector(`.day[data-day="${UI.day}"] .bar i`); if (bar) bar.style.width = pct + "%";
+    return;
+  }
+  const day = ev.target.closest(".day");
+  if (day){ UI.day = +day.dataset.day; persist(); render(); return; }
+  const act = ev.target.closest("[data-act]");
+  if (act){
+    const a = act.dataset.act;
+    if (a === "prev" && UI.week > 1){ UI.week--; persist(); render(); }
+    else if (a === "next" && UI.week < WEEKS){ UI.week++; persist(); render(); }
+    else if (a === "csv") exportCSV();
+    else if (a === "copy") copySummary();
+    else if (a === "code") copyCode();
+    else if (a === "import") importCode();
+    else if (a === "cycle"){
+      if (act.dataset.confirm){ S.cycle++; UI.week = 1; UI.day = 0; S.t = Date.now(); changed(); UI.view = "rutina"; render(); window.scrollTo(0,0); }
+      else { act.dataset.confirm = "1"; act.textContent = `Toca otra vez para empezar el ciclo ${S.cycle+1}`; }
+    }
+    return;
+  }
+  const go = ev.target.closest("[data-goto]");
+  if (go){ UI.week = +go.dataset.goto; UI.view = "rutina"; persist(); render(); window.scrollTo(0,0); }
+});
+document.addEventListener("input", ev => {
+  const inp = ev.target.closest("input[data-ex]");
+  if (!inp) return;
+  const e = touch(inp.dataset.ex);
+  e[inp.dataset.f] = inp.value.slice(0, 12); e.t = Date.now();
+  changed();
+});
+
+/* ---------- Export ---------- */
+function rowsForExport(){
+  const out = [];
+  for (const k of Object.keys(S.entries).sort()){
+    const m = /^c(\d+)w(\d+)d(\d)-(.+)$/.exec(k); if (!m) continue;
+    const ex = (R[+m[3]] || []).find(x => x.id === m[4]); if (!ex) continue;
+    const e = S.entries[k], n = prescription(ex, +m[2]).sets;
+    out.push({ciclo:m[1], semana:m[2], dia:DAYS[+m[3]].name, ejercicio:ex.name,
+      hechas:(e.s||[]).slice(0,n).filter(Boolean).length, total:n, peso:e.kg||"", reps:e.r||"",
+      fecha: e.t ? new Date(e.t).toISOString().slice(0,10) : ""});
+  }
+  return out;
+}
+function exportCSV(){
+  const q = v => `"${String(v).replace(/"/g,'""')}"`;
+  const rows = rowsForExport();
+  const csv = "ciclo,semana,dia,ejercicio,series_hechas,series_totales,peso,reps,fecha\n" +
+    rows.map(r => [r.ciclo,r.semana,q(r.dia),q(r.ejercicio),r.hechas,r.total,q(r.peso),q(r.reps),r.fecha].join(",")).join("\n");
+  const msg = $("#exportmsg");
+  if (!downloadsNS){
+    try {
+      const url = URL.createObjectURL(new Blob([csv], {type:"text/csv;charset=utf-8"}));
+      const a = document.createElement("a"); a.href = url; a.download = `rutina-ciclo${S.cycle}.csv`;
+      document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+      if (msg) msg.textContent = "Archivo descargado.";
+    } catch (e) { if (msg) msg.textContent = "No se pudo descargar. Usa Copiar resumen."; }
+    return;
+  }
+  downloadsNS.save({filename:`rutina-ciclo${S.cycle}.csv`, data:csv})
+    .then(() => { if (msg) msg.textContent = "Archivo guardado."; })
+    .catch(e => { if (msg) msg.textContent = e && e.code === "declined" ? "Descarga cancelada." : "No se pudo descargar. Usa Copiar resumen."; });
+}
+function summaryText(){
+  const w = UI.week;
+  let txt = `Semana ${w} de ${WEEKS}${S.cycle>1?` (ciclo ${S.cycle})`:""}\n`;
+  DAYS.forEach((day,d) => {
+    const t = dayTotals(w,d);
+    txt += `\n${day.name} (${t.done}/${t.total} series)\n`;
+    for (const ex of R[d]){
+      const p = prescription(ex,w), e = entry(w,d,ex.id) || {};
+      const done = (e.s||[]).slice(0,p.sets).filter(Boolean).length;
+      const mark = done >= p.sets ? "✔" : done ? "◐" : "✗";
+      const load = (e.kg || e.r) ? `: ${e.kg||"?"} x ${e.r||"?"}` : "";
+      txt += `${mark} ${ex.name}${load}\n`;
+    }
+  });
+  return txt;
+}
+function copySummary(){
+  const txt = summaryText(), msg = $("#exportmsg");
+  const fallback = () => {
+    $("#copybox").innerHTML = `<textarea readonly aria-label="Resumen"></textarea>`;
+    const ta = $("#copybox textarea"); ta.value = txt; ta.focus(); ta.select();
+    if (msg) msg.textContent = "Mantén presionado el texto para copiarlo.";
+  };
+  if (navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(txt).then(() => { if (msg) msg.textContent = "Resumen copiado. Pégalo en WhatsApp o donde quieras."; }, fallback);
+  } else fallback();
+}
+
+function encodeState(){
+  const bytes = new TextEncoder().encode(JSON.stringify({v:1, cycle:S.cycle, entries:S.entries}));
+  let bin = ""; for (const b of bytes) bin += String.fromCharCode(b);
+  return "RUTINA1:" + btoa(bin);
+}
+function decodeState(txt){
+  const m = /RUTINA1:([A-Za-z0-9+/=\s]+)/.exec(txt || "");
+  if (!m) return null;
+  const bin = atob(m[1].replace(/\s+/g, ""));
+  const o = JSON.parse(new TextDecoder().decode(Uint8Array.from(bin, c => c.charCodeAt(0))));
+  return (o && typeof o === "object" && o.entries && typeof o.entries === "object") ? o : null;
+}
+function copyCode(){
+  const txt = encodeState(), msg = $("#importmsg");
+  const fallback = () => { const ta = $("#importbox"); ta.value = txt; ta.focus(); ta.select(); if (msg) msg.textContent = "Mantén presionado el código para copiarlo."; };
+  if (navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(txt).then(() => { if (msg) msg.textContent = "Código copiado. Mándalo por WhatsApp."; }, fallback);
+  } else fallback();
+}
+function importCode(){
+  const msg = $("#importmsg"); let o = null;
+  try { o = decodeState($("#importbox").value); } catch (e) {}
+  if (!o){ if (msg) msg.textContent = "El código no es válido. Copia el mensaje completo, desde RUTINA1."; return; }
+  const n = merge(o);
+  scheduleSync();
+  $("#importbox").value = "";
+  const m2 = $("#importmsg");
+  if (m2) m2.textContent = n ? `Avance cargado: ${n} ejercicios actualizados.` : "No había nada nuevo en ese código.";
+}
+
+/* ---------- Sync ---------- */
+let docRef = null, canWrite = false, mode = "local", downloadsNS = null;
+let syncTimer = null, inflight = false, again = false;
+function statusText(){
+  if (mode === "cloud") return "Se guarda en la nube. Quien tenga acceso a esta página ve tu avance.";
+  if (mode === "cloud-read") return "Se guarda solo en este teléfono. Para compartir el avance, usa Exportar en Avance.";
+  return "Se guarda en este teléfono. Para compartir el avance, usa Exportar en Avance.";
+}
+function setMode(m){ mode = m; const s = $("#status"); if (s) s.textContent = statusText(); }
+function scheduleSync(){
+  if (!docRef || !canWrite) return;
+  clearTimeout(syncTimer); syncTimer = setTimeout(push, 900);
+}
+function push(retry){
+  if (!docRef || !canWrite) return;
+  if (inflight){ again = true; return; }
+  inflight = true;
+  docRef.set({cycle:S.cycle, entries:S.entries, updatedAt:Date.now()})
+    .then(() => { setMode("cloud"); })
+    .catch(e => {
+      if (e && e.code === "invalid_argument"){ canWrite = false; setMode("cloud-read"); }
+      else if (e && e.code === "unavailable" && !retry){ setTimeout(() => push(true), 1500 + Math.random()*1500); }
+    })
+    .finally(() => { inflight = false; if (again){ again = false; push(); } });
+}
+function merge(remote){
+  const re = (remote && remote.entries) || {};
+  let local = false, need = false, n = 0;
+  for (const k in re){
+    if (!/^c\d+w\d+d\d-[a-z0-9]+$/.test(k)) continue;
+    const r = re[k]; if (!r || typeof r !== "object") continue;
+    if (!S.entries[k] || (r.t||0) > (S.entries[k].t||0)){
+      S.entries[k] = {s: Array.isArray(r.s) ? r.s.map(x => x ? 1 : 0) : [], kg: String(r.kg||"").slice(0,12), r: String(r.r||"").slice(0,12), t: +r.t || 0};
+      local = true; n++;
+    }
+  }
+  for (const k in S.entries){ if (!re[k] || (S.entries[k].t||0) > (re[k].t||0)) need = true; }
+  const rc = +remote.cycle || 1;
+  if (rc > S.cycle){ S.cycle = rc; local = true; } else if (rc < S.cycle) need = true;
+  if (local){ persist(); safeRender(); }
+  if (need) scheduleSync();
+  return n;
+}
+async function initCapabilities(){
+  if (!window.claude || typeof window.claude.use !== "function") return;
+  try {
+    const [db, user, dl] = await Promise.all([claude.use("db"), claude.use("user"), claude.use("downloads")]);
+    if (dl){ downloadsNS = dl; if (UI.view === "avance") safeRender(); }
+    if (!db) return;
+    let w = null;
+    try { w = user ? await user.can("data.write") : null; } catch (e) {}
+    canWrite = w !== false;
+    setMode(canWrite ? "cloud" : "cloud-read");
+    docRef = db.doc("log/main");
+    docRef.onSnapshot(snap => {
+      if (!snap.exists){ if (Object.keys(S.entries).length) scheduleSync(); return; }
+      merge(snap.data() || {});
+    }, () => { setMode(canWrite ? "cloud" : "cloud-read"); });
+  } catch (e) {}
+}
+
+render();
+initCapabilities();
+if ("serviceWorker" in navigator && window.isSecureContext && !window.claude){
+  navigator.serviceWorker.register("sw.js").catch(() => {});
+}
+})();
+</script>
+</body>
+</html>
