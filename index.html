@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Rutina">
 <meta name="mobile-web-app-capable" content="yes">
-<meta name="theme-color" content="#18222D">
+<meta name="theme-color" content="#3A2229">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Ctext y=%22.9em%22 font-size=%2290%22%3E%F0%9F%8F%8B%EF%B8%8F%3C/text%3E%3C/svg%3E">
@@ -16,8 +16,8 @@
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
 :root{
-  --bg:#EDF0F3; --surface:#FFFFFF; --ink:#18222D; --muted:#5D6875; --line:#D3D9E0;
-  --red:#C8302C; --blue:#1F5FA8; --yellow:#E3A900; --green:#24865A; --white:#FFFFFF;
+  --bg:#FBF1EE; --surface:#FFFFFF; --ink:#3A2229; --muted:#86636A; --line:#EBD6D3;
+  --rosa:#D94A7B; --coral:#E3664B; --durazno:#F0A04B; --frambuesa:#A8336A; --dorado:#D9A13A;
   --on-day:#FFFFFF;
   --f-head:"Barlow Condensed","Arial Narrow",system-ui,sans-serif;
   --f-body:"Barlow",system-ui,-apple-system,"Segoe UI",sans-serif;
@@ -28,24 +28,24 @@
 }
 @media (prefers-color-scheme:dark){
   :root:not([data-theme="light"]){
-    --bg:#10161C; --surface:#18212A; --ink:#E8EDF2; --muted:#93A0AD; --line:#2A3540;
-    --red:#E0473F; --blue:#4A8BD6; --yellow:#F0BD1C; --green:#3BA872; --white:#F4F6F8;
+    --bg:#1E1416; --surface:#2A1D20; --ink:#F7E9E8; --muted:#C3A3A6; --line:#46323A;
+    --rosa:#EC6A96; --coral:#F07E62; --durazno:#F5AE60; --frambuesa:#C9518A; --dorado:#E5B24F;
   }
 }
 :root[data-theme="dark"]{
-  --bg:#10161C; --surface:#18212A; --ink:#E8EDF2; --muted:#93A0AD; --line:#2A3540;
-  --red:#E0473F; --blue:#4A8BD6; --yellow:#F0BD1C; --green:#3BA872; --white:#F4F6F8;
+  --bg:#1E1416; --surface:#2A1D20; --ink:#F7E9E8; --muted:#C3A3A6; --line:#46323A;
+  --rosa:#EC6A96; --coral:#F07E62; --durazno:#F5AE60; --frambuesa:#C9518A; --dorado:#E5B24F;
 }
 html{scroll-padding-top:env(safe-area-inset-top,0px)}
 *,*::before,*::after{box-sizing:inherit}
 body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.45;-webkit-text-size-adjust:100%}
 button,input{font:inherit;color:inherit}
 button{cursor:pointer}
-:focus-visible{outline:3px solid var(--blue);outline-offset:2px}
+:focus-visible{outline:3px solid var(--rosa);outline-offset:2px}
 .wrap{max-width:560px;margin:0 auto;padding:0 16px 120px}
 
-.d0{--day:var(--red)} .d1{--day:var(--blue)} .d2{--day:var(--yellow);--on-day:#18222D}
-.d3{--day:var(--green)} .d4{--day:var(--white);--on-day:#18222D}
+.d0{--day:var(--rosa)} .d1{--day:var(--coral)} .d2{--day:var(--durazno);--on-day:#3A2229}
+.d3{--day:var(--frambuesa)} .d4{--day:var(--dorado);--on-day:#3A2229}
 
 header.top{padding:20px 0 8px}
 .weekline{display:flex;align-items:center;gap:12px}
@@ -62,7 +62,6 @@ header.top{padding:20px 0 8px}
 .day .bar{display:block;height:4px;margin:6px 10px 0;border-radius:2px;background:var(--line);overflow:hidden}
 .day .bar i{display:block;height:100%;background:var(--day);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--ink) 25%,transparent)}
 .day[aria-selected="true"]{background:var(--day);color:var(--on-day);border-color:var(--day)}
-.d4.day[aria-selected="true"]{border-color:var(--ink)}
 .day[aria-selected="true"] .bar{background:color-mix(in srgb,var(--on-day) 30%,transparent)}
 .day[aria-selected="true"] .bar i{background:var(--on-day);box-shadow:none}
 
@@ -71,18 +70,17 @@ header.top{padding:20px 0 8px}
 .dayhead span{color:var(--muted);font-size:15px;white-space:nowrap}
 
 .ex{background:var(--surface);border:1px solid var(--line);border-left:6px solid var(--day);border-radius:12px;padding:14px 14px 12px;margin-bottom:10px}
-.d4 .ex,.ex.d4{border-left-color:var(--ink)}
 .ex h3{margin:0;font-size:18px;font-weight:600;line-height:1.25}
 .rx{margin:2px 0 0;font-family:var(--f-head);font-size:20px;font-weight:600}
 .hint{margin:4px 0 0;font-size:14px;color:var(--muted)}
 .hint.up{color:var(--ink);font-weight:600}
-.hint.up::before{content:"▲ ";color:var(--green)}
+.today{margin:6px 0 0;display:inline-block;background:color-mix(in srgb,var(--day) 16%,transparent);border-radius:8px;padding:4px 10px;font-weight:600;font-size:15px}
+.hint.up::before{content:"▲ ";color:var(--rosa)}
 .row{display:flex;flex-wrap:wrap;align-items:center;gap:10px 14px;margin-top:12px}
 .plates{display:flex;gap:8px;flex-wrap:wrap}
 .plate{width:40px;height:40px;border-radius:50%;border:2px solid var(--line);background:transparent;position:relative;padding:0}
 .plate::after{content:"";position:absolute;inset:13px;border-radius:50%;border:2px solid var(--line)}
 .plate[aria-pressed="true"]{background:var(--day);border-color:var(--day)}
-.d4 .plate[aria-pressed="true"]{border-color:var(--ink)}
 .plate[aria-pressed="true"]::after{border-color:color-mix(in srgb,var(--on-day) 55%,transparent);background:var(--bg)}
 .plate span{position:absolute;inset:0;display:grid;place-items:center;font-size:12px;font-weight:600;color:var(--muted)}
 .plate[aria-pressed="true"] span{opacity:0}
@@ -133,10 +131,10 @@ textarea{width:100%;min-height:160px;border:1px solid var(--line);border-radius:
 /* ---------- Plan ---------- */
 const WEEKS = 8;
 const PHASE = [
-  {rir:"RIR 3", txt:"Deja 3 repeticiones en reserva."},
-  {rir:"RIR 2", txt:"Sube 2,5 kg en los básicos. Deja 2 en reserva."},
-  {rir:"RIR 1", txt:"Sube 2,5 kg en los básicos. Deja 1 en reserva."},
-  {rir:"Descarga", txt:"Mitad de las series y 10% menos de peso."}
+  {rir:"Esfuerzo medio.", txt:"Termina cada serie sintiendo que podrías hacer 3 más."},
+  {rir:"Esfuerzo alto.", txt:"Termina cada serie sintiendo que podrías hacer 2 más."},
+  {rir:"Esfuerzo muy alto.", txt:"Termina cada serie sintiendo que podrías hacer 1 más."},
+  {rir:"Semana suave.", txt:"Mitad de las series y un poco menos de peso."}
 ];
 const DAYS = [
   {short:"Lun", name:"Lunes", title:"Cuádriceps"},
@@ -180,7 +178,7 @@ const R = [
   {id:"toh", name:"Extensión de tríceps sobre la cabeza", type:"acc", sets:3, lo:10, hi:12},
   {id:"walk2", name:"Caminata inclinada", type:"cardio", desc:"10 min"}
  ],[
-  {id:"dl", name:"Peso muerto convencional", type:"acc", sets:3, lo:5, hi:5, note:"Empieza con 10% menos de lo que usas hoy. Sube 2,5 kg cuando las 3 series salen con RIR 2."},
+  {id:"dl", name:"Peso muerto convencional", type:"acc", sets:3, lo:5, hi:5, note:"Empieza con 10% menos de lo que usas hoy. Sube 2,5 kg cuando las 3 series te salen y sientes que podrías hacer 2 más."},
   {id:"prh", name:"Prensa con pies altos", type:"acc", sets:3, lo:12, hi:15},
   {id:"pull", name:"Jalón o remo", type:"acc", sets:3, lo:10, hi:12},
   {id:"chp2", name:"Press de pecho", type:"acc", sets:3, lo:10, hi:12},
@@ -215,14 +213,14 @@ function prescription(ex, w){
   const dl = isDeload(w);
   if (ex.type === "main"){
     const b = ex.blocks[blockOf(w)], plus = (S.cycle - 1) * 5;
-    if (dl) return {sets:2, txt:`2 x ${b.reps} con ${fmt(round25(b.kg[2]*0.9)+plus)} kg`, kg:round25(b.kg[2]*0.9)+plus};
+    if (dl) return {sets:2, txt:`2 series de ${b.reps} reps con ${fmt(round25(b.kg[2]*0.9)+plus)} kg`, kg:round25(b.kg[2]*0.9)+plus};
     const kg = b.kg[(w-1)%4] + plus;
-    return {sets:b.sets, txt:`${b.sets} x ${b.reps} con ${fmt(kg)} kg`, kg};
+    return {sets:b.sets, txt:`${b.sets} series de ${b.reps} reps con ${fmt(kg)} kg`, kg};
   }
   if (ex.type === "acc"){
     const sets = dl ? Math.ceil(ex.sets/2) : ex.sets;
     const reps = ex.lo === ex.hi ? `${ex.lo}` : `${ex.lo} a ${ex.hi}`;
-    return {sets, txt:`${sets} x ${reps}${ex.per ? " " + ex.per : ""}`};
+    return {sets, txt:`${sets} series de ${reps} reps${ex.per ? " " + ex.per : ""}`};
   }
   if (ex.type === "rounds") return {sets: dl ? Math.ceil(ex.sets/2) : ex.sets, txt: ex.desc};
   return {sets:1, txt:ex.desc};
@@ -240,6 +238,16 @@ function previous(ex, w, d){
     if (o < cur && o > bestOrder && (e.kg || e.r)) { best = e; bestOrder = o; }
   }
   return best;
+}
+function todayFor(ex, w, d){
+  // Weight to use today, from the last record of this exercise
+  const prev = previous(ex, w, d);
+  if (!prev || !prev.kg) return {html:"Hoy: tu peso de siempre", sub:"Anótalo al terminar. La próxima semana te lo muestro."};
+  const kg = esc(prev.kg), last = `Última vez: ${kg}, ${esc(prev.r || "?")} reps en la última serie.`;
+  if (isDeload(w)) return {html:`Hoy: un poco menos que ${kg}`, sub:"Semana suave. Baja más o menos un 10%."};
+  const reps = parseInt(prev.r, 10), allDone = prev.s && prev.s.length && prev.s.every(Boolean);
+  if (allDone && reps >= ex.hi) return {html:`Hoy: sube de ${kg}`, sub:`${last} Sube lo mínimo y vuelve a ${ex.lo} reps.`, up:true};
+  return {html:`Hoy: ${kg}`, sub:`${last} Intenta hacer más reps.`, fill:prev.kg};
 }
 function dayTotals(w,d){
   let done = 0, total = 0;
@@ -281,7 +289,7 @@ function headerHTML(){
         <button class="iconbtn" data-act="next" aria-label="Semana siguiente" ${w>=WEEKS?"disabled":""}>›</button>
       </div>
     </div>
-    <p class="phase">${cyc}Bloque ${blockOf(w)+1}. <strong>${ph.rir}.</strong> ${ph.txt}</p>
+    <p class="phase">${cyc}Bloque ${blockOf(w)+1}. <strong>${ph.rir}</strong> ${ph.txt}</p>
   </header>`;
 }
 
@@ -307,16 +315,10 @@ function routineHTML(){
     if (ex.type === "main"){
       hint = `<p class="hint">${ex.note}${isDeload(w) ? "" : " Si no salen las reps con este peso, baja 2,5 kg."}</p>`;
     } else if (ex.type === "acc"){
-      const prev = previous(ex, w, d);
-      const parts = [];
+      const t = todayFor(ex, w, d);
+      const parts = [`<p class="today">${t.html}</p>`];
+      if (t.sub) parts.push(`<p class="hint${t.up ? " up" : ""}">${t.sub}</p>`);
       if (ex.note) parts.push(`<p class="hint">${ex.note}</p>`);
-      if (isDeload(w)) parts.push(`<p class="hint">Descarga: usa 10% menos de peso.</p>`);
-      else if (prev){
-        const reps = parseInt(prev.r, 10), allDone = prev.s && prev.s.length && prev.s.every(Boolean);
-        const last = `Última vez: ${esc(prev.kg || "?")} x ${esc(prev.r || "?")}.`;
-        if (allDone && reps >= ex.hi) parts.push(`<p class="hint up">${last} Sube el peso hoy y vuelve a ${ex.lo} reps.</p>`);
-        else parts.push(`<p class="hint">${last}</p>`);
-      }
       hint = parts.join("");
     }
     const fields = (ex.type === "main" || ex.type === "acc") ? `<div class="fields">
@@ -371,14 +373,16 @@ function progressHTML(){
 function guideHTML(){
   return `<div class="prose">
     <h2>Cómo usarla</h2>
-    <p>Elige la semana arriba y el día. Toca un disco cuando terminas una serie. Anota el peso y las reps de la última serie.</p>
+    <p>Elige la semana arriba y el día. Toca un círculo cuando terminas una serie. Anota el peso y las reps de la última serie.</p>
+    <p>"3 series de 12 a 15 reps" quiere decir 3 series. En cada una haces entre 12 y 15 repeticiones. No son kilos.</p>
+    <p>Cada ejercicio te dice el peso de hoy, según lo que anotaste la semana anterior. Al tocar el primer círculo, la app llena el peso sola. Si usaste otro peso, cámbialo.</p>
     <p>El peso puede ser en kg o en barritas de la máquina. Usa siempre la misma unidad en cada ejercicio.</p>
-    <h3>Qué es RIR</h3>
-    <p>RIR son las repeticiones en reserva. RIR 2 quiere decir que terminas la serie y podrías hacer 2 más con buena técnica.</p>
+    <h3>Cuánto esfuerzo</h3>
+    <p>Arriba de cada semana dice cuántas repeticiones más podrías hacer al terminar cada serie. Semana 1: 3 más. Semana 2: 2 más. Semana 3: 1 más. Semana 4: suave.</p>
     <h3>Sentadilla y hip thrust</h3>
     <p>Siguen bloques de 4 semanas. En las semanas 1 a 3 el peso sube 2,5 kg por semana. La semana 4 es descarga. El bloque 2 (semanas 5 a 8) usa menos reps y más peso. La app muestra el peso de cada semana. Si las reps no salen, baja 2,5 kg.</p>
     <h3>Todo lo demás</h3>
-    <p>Cada ejercicio tiene un rango, por ejemplo 8 a 12. Cuando completas todas las series con el número alto, sube lo mínimo posible (1 barrita o 1 a 2 kg) y vuelve al número bajo. La app te avisa con un ▲.</p>
+    <p>Cada ejercicio tiene un rango, por ejemplo 8 a 12. Cuando completas todas las series con el número alto, sube lo mínimo posible (1 barrita o 1 a 2 kg) y vuelve al número bajo. La app te avisa con un ▲ y "Hoy: sube".</p>
     <h3>Descarga</h3>
     <p>En las semanas 4 y 8 haces la mitad de las series con 10% menos de peso. Sirve para recuperar.</p>
     <h3>Para que funcione</h3>
@@ -409,6 +413,14 @@ document.addEventListener("click", ev => {
     const e = touch(plate.dataset.ex), i = +plate.dataset.i;
     while (e.s.length < n) e.s.push(0);
     e.s[i] = e.s[i] ? 0 : 1; e.t = Date.now();
+    if (e.s[i] && !e.kg){
+      const p = prescription(ex, UI.week);
+      const fill = ex.type === "main" ? fmt(p.kg) : ex.type === "acc" ? todayFor(ex, UI.week, UI.day).fill : "";
+      if (fill){
+        e.kg = String(fill);
+        const inp = document.querySelector(`input[data-ex="${ex.id}"][data-f="kg"]`); if (inp) inp.value = e.kg;
+      }
+    }
     plate.setAttribute("aria-pressed", String(!!e.s[i]));
     changed();
     const t = dayTotals(UI.week, UI.day), pct = t.total ? Math.round(t.done/t.total*100) : 0;
