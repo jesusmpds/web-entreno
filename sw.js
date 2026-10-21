@@ -1,5 +1,5 @@
 // Cambia VERSION cada vez que publiques cambios en estos archivos.
-const VERSION = "v2";
+const VERSION = "v3";
 const CORE = "rutina-core-" + VERSION;
 const FONTS = "rutina-fonts";
 const FILES = [
