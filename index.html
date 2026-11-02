@@ -140,7 +140,7 @@ const DAYS = [
   {short:"Lun", name:"Lunes", title:"Cuádriceps"},
   {short:"Mar", name:"Martes", title:"Espalda, pecho y bíceps"},
   {short:"Mié", name:"Miércoles", title:"Glúteo y femoral"},
-  {short:"Jue", name:"Jueves", title:"Hombro, tríceps y pecho"},
+  {short:"Jue", name:"Jueves", title:"Hombro, tríceps y abdomen"},
   {short:"Vie", name:"Viernes", title:"Cuerpo completo"}
 ];
 // type: main (bloques), acc (doble progresión), rounds (sin peso), cardio
@@ -172,11 +172,13 @@ const R = [
   {id:"abs2", name:"Abdominales", type:"rounds", sets:2, desc:"2 rondas"}
  ],[
   {id:"ohp", name:"Press militar con mancuernas", type:"acc", sets:4, lo:6, hi:10},
-  {id:"inc", name:"Press inclinado con mancuernas", type:"acc", sets:3, lo:8, hi:12},
   {id:"lr", name:"Elevaciones laterales", type:"acc", sets:4, lo:12, hi:15},
+  {id:"fr", name:"Elevaciones frontales", type:"acc", sets:3, lo:12, hi:15},
   {id:"rd", name:"Hombro posterior en polea", type:"acc", sets:3, lo:12, hi:15},
   {id:"tp", name:"Tríceps en polea", type:"acc", sets:3, lo:10, hi:12},
   {id:"toh", name:"Extensión de tríceps sobre la cabeza", type:"acc", sets:3, lo:10, hi:12},
+  {id:"cc", name:"Abdominales en polea", type:"acc", sets:3, lo:12, hi:15},
+  {id:"wc", name:"Crunch con peso", type:"acc", sets:3, lo:12, hi:15},
   {id:"walk2", name:"Caminata inclinada", type:"cardio", desc:"10 min"}
  ],[
   {id:"dl", name:"Peso muerto convencional", type:"acc", sets:3, lo:5, hi:5, note:"Empieza con 10% menos de lo que usas hoy. Sube 2,5 kg cuando las 3 series te salen y sientes que podrías hacer 2 más."},
@@ -188,6 +190,10 @@ const R = [
   {id:"tm", name:"Caminadora", type:"cardio", desc:"a gusto"}
  ]
 ];
+// Ejercicios quitados del plan. Solo sirven para que su registro siga saliendo en el CSV.
+const OLD = [[],[],[],[
+  {id:"inc", name:"Press inclinado con mancuernas", type:"acc", sets:3, lo:8, hi:12}
+ ],[]];
 
 /* ---------- Helpers ---------- */
 const $ = s => document.querySelector(s);
@@ -462,7 +468,7 @@ function rowsForExport(){
   const out = [];
   for (const k of Object.keys(S.entries).sort()){
     const m = /^c(\d+)w(\d+)d(\d)-(.+)$/.exec(k); if (!m) continue;
-    const ex = (R[+m[3]] || []).find(x => x.id === m[4]); if (!ex) continue;
+    const ex = (R[+m[3]] || []).concat(OLD[+m[3]] || []).find(x => x.id === m[4]); if (!ex) continue;
     const e = S.entries[k], n = prescription(ex, +m[2]).sets;
     out.push({ciclo:m[1], semana:m[2], dia:DAYS[+m[3]].name, ejercicio:ex.name,
       hechas:(e.s||[]).slice(0,n).filter(Boolean).length, total:n, peso:e.kg||"", reps:e.r||"",
