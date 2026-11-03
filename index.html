@@ -73,13 +73,15 @@ header.top{padding:20px 0 8px}
 .ex h3{margin:0;font-size:18px;font-weight:600;line-height:1.25}
 .rx{margin:2px 0 0;font-family:var(--f-head);font-size:20px;font-weight:600}
 .hint{margin:4px 0 0;font-size:14px;color:var(--muted)}
-.hint.up{color:var(--ink);font-weight:600}
+.hint.up,.hint.warn{color:var(--ink);font-weight:600}
+.hint.warn:empty{display:none}
 .today{margin:6px 0 0;display:inline-block;background:color-mix(in srgb,var(--day) 16%,transparent);border-radius:8px;padding:4px 10px;font-weight:600;font-size:15px}
 .hint.up::before{content:"▲ ";color:var(--rosa)}
 .row{display:flex;flex-wrap:wrap;align-items:center;gap:10px 14px;margin-top:12px}
 .plates{display:flex;gap:8px;flex-wrap:wrap}
 .plate{width:40px;height:40px;border-radius:50%;border:2px solid var(--line);background:transparent;position:relative;padding:0}
 .plate::after{content:"";position:absolute;inset:13px;border-radius:50%;border:2px solid var(--line)}
+.plate:has(span)[aria-pressed="false"]::after{display:none}
 .plate[aria-pressed="true"]{background:var(--day);border-color:var(--day)}
 .plate[aria-pressed="true"]::after{border-color:color-mix(in srgb,var(--on-day) 55%,transparent);background:var(--bg)}
 .plate span{position:absolute;inset:0;display:grid;place-items:center;font-size:12px;font-weight:600;color:var(--muted)}
@@ -89,6 +91,8 @@ header.top{padding:20px 0 8px}
 .field input{width:64px;border:0;background:transparent;padding:9px 4px 9px 10px;font-size:16px;font-weight:600}
 .field input::placeholder{color:var(--muted);font-weight:400}
 .field span{padding-right:9px;color:var(--muted);font-size:13px}
+.field input:focus-visible{outline:none}
+.field:focus-within{outline:3px solid var(--rosa);outline-offset:2px}
 @media (max-width:380px){.fields{margin-left:0}}
 
 .status{margin:18px 0 0;font-size:14px;color:var(--muted)}
@@ -144,9 +148,10 @@ const DAYS = [
   {short:"Vie", name:"Viernes", title:"Cuerpo completo"}
 ];
 // type: main (bloques), acc (doble progresión), rounds (sin peso), cardio
+// side: el peso se anota por lado de la barra. step: cuánto subir, si es fijo.
 const R = [
  [
-  {id:"sq", name:"Sentadilla trasera", type:"main", blocks:[{sets:4,reps:8,kg:[52.5,55,57.5]},{sets:4,reps:6,kg:[60,62.5,65]}], note:"Antes, 2 o 3 series ligeras de calentamiento. No cuentan."},
+  {id:"sq", name:"Sentadilla trasera", type:"main", blocks:[{sets:4,reps:8,kg:[52.5,55,57.5]},{sets:4,reps:6,kg:[60,62.5,65]}], side:true, note:"Antes, 2 o 3 series ligeras de calentamiento. No cuentan."},
   {id:"pr", name:"Prensa", type:"acc", sets:3, lo:10, hi:12},
   {id:"lu", name:"Zancadas con mancuerna", type:"acc", sets:3, lo:8, hi:10, per:"por pierna"},
   {id:"ext", name:"Extensión de cuádriceps", type:"acc", sets:3, lo:12, hi:15},
@@ -164,7 +169,7 @@ const R = [
   {id:"ham", name:"Curl martillo", type:"acc", sets:3, lo:10, hi:12},
   {id:"jog", name:"Trote", type:"cardio", desc:"10 min"}
  ],[
-  {id:"ht", name:"Hip thrust", type:"main", blocks:[{sets:4,reps:10,kg:[80,85,90]},{sets:4,reps:8,kg:[90,95,100]}], note:"Peso total, con la barra incluida."},
+  {id:"ht", name:"Hip thrust", type:"main", blocks:[{sets:4,reps:10,kg:[80,85,90]},{sets:4,reps:8,kg:[90,95,100]}], side:true},
   {id:"rdl", name:"Peso muerto rumano", type:"acc", sets:3, lo:8, hi:10},
   {id:"bul", name:"Sentadilla búlgara", type:"acc", sets:3, lo:8, hi:10, per:"por pierna"},
   {id:"lc2", name:"Curl femoral", type:"acc", sets:3, lo:10, hi:12},
@@ -181,7 +186,7 @@ const R = [
   {id:"wc", name:"Crunch con peso", type:"acc", sets:3, lo:12, hi:15},
   {id:"walk2", name:"Caminata inclinada", type:"cardio", desc:"10 min"}
  ],[
-  {id:"dl", name:"Peso muerto convencional", type:"acc", sets:3, lo:5, hi:5, note:"Empieza con 10% menos de lo que usas hoy. Sube 2,5 kg cuando las 3 series te salen y sientes que podrías hacer 2 más."},
+  {id:"dl", name:"Peso muerto convencional", type:"acc", sets:3, lo:5, hi:5, side:true, step:2.5, note:"Haz solo 5 reps aunque puedas más. Si las 3 series salen y sientes que te sobran 2, sube 2,5 de cada lado."},
   {id:"prh", name:"Prensa con pies altos", type:"acc", sets:3, lo:12, hi:15},
   {id:"pull", name:"Jalón o remo", type:"acc", sets:3, lo:10, hi:12},
   {id:"chp2", name:"Press de pecho", type:"acc", sets:3, lo:10, hi:12},
@@ -197,7 +202,11 @@ const OLD = [[],[],[],[
 
 /* ---------- Helpers ---------- */
 const $ = s => document.querySelector(s);
-const fmt = n => String(Math.round(n*10)/10).replace(".", ",");
+const fmt = n => String(Math.round(n*100)/100).replace(".", ",");
+const parseKg = v => { const n = parseFloat(String(v || "").replace(",", ".")); return n > 0 ? n : null; };
+const BAR = 20; // kg de la barra. Supuesto: no sabemos qué barra usa el gimnasio.
+const perSide = kg => Math.max(0, (kg - BAR) / 2);
+const repTarget = (ex, w) => ex.type === "main" ? ex.blocks[blockOf(w)].reps : ex.hi;
 const esc = s => String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const isDeload = w => (w - 1) % 4 === 3;
 const blockOf = w => w <= 4 ? 0 : 1;
@@ -220,9 +229,8 @@ function prescription(ex, w){
   const dl = isDeload(w);
   if (ex.type === "main"){
     const b = ex.blocks[blockOf(w)], plus = (S.cycle - 1) * 5;
-    if (dl) return {sets:2, txt:`2 series de ${b.reps} reps con ${fmt(round25(b.kg[2]*0.9)+plus)} kg`, kg:round25(b.kg[2]*0.9)+plus};
-    const kg = b.kg[(w-1)%4] + plus;
-    return {sets:b.sets, txt:`${b.sets} series de ${b.reps} reps con ${fmt(kg)} kg`, kg};
+    const sets = dl ? 2 : b.sets, kg = dl ? round25(b.kg[2]*0.9) + plus : b.kg[(w-1)%4] + plus;
+    return {sets, txt:`${sets} series de ${b.reps} reps con ${fmt(kg)} kg en total`, kg, fill: ex.side ? perSide(kg) : kg};
   }
   if (ex.type === "acc"){
     const sets = dl ? Math.ceil(ex.sets/2) : ex.sets;
@@ -253,8 +261,23 @@ function todayFor(ex, w, d){
   const kg = esc(prev.kg), last = `Última vez: ${kg}, ${esc(prev.r || "?")} reps en la última serie.`;
   if (isDeload(w)) return {html:`Hoy: un poco menos que ${kg}`, sub:"Semana suave. Baja más o menos un 10%."};
   const reps = parseInt(prev.r, 10), allDone = prev.s && prev.s.length && prev.s.every(Boolean);
-  if (allDone && reps >= ex.hi) return {html:`Hoy: sube de ${kg}`, sub:`${last} Sube lo mínimo y vuelve a ${ex.lo} reps.`, up:true};
-  return {html:`Hoy: ${kg}`, sub:`${last} Intenta hacer más reps.`, fill:prev.kg};
+  const side = ex.side ? " de cada lado" : "";
+  if (reps > ex.hi || (allDone && reps >= ex.hi)){
+    const more = reps > ex.hi ? ` Hiciste más de ${ex.hi}, así que el peso te quedó liviano.` : "";
+    const n = parseKg(prev.kg);
+    if (ex.step && n){
+      const next = fmt(n + ex.step);
+      return {html:`Hoy: ${next}${side}`, sub:`${last}${more} Sube ${fmt(ex.step)}${side} y haz ${ex.lo} reps.`, up:true, fill:next};
+    }
+    return {html:`Hoy: un poco más que ${kg}${side}`, sub:`${last}${more} Sube lo mínimo (1 barrita o 1 a 2 kg) y vuelve a ${ex.lo} reps.`, up:true};
+  }
+  return {html:`Hoy: ${kg}${side}`, sub:`${last} Intenta hacer más reps.`, fill:prev.kg};
+}
+function overMsg(ex, w, r){
+  const reps = parseInt(r, 10), hi = repTarget(ex, w);
+  if (!(reps > hi)) return "";
+  const plan = ex.type === "acc" && ex.lo !== ex.hi ? `hasta ${hi} reps` : `${hi} reps`;
+  return `El plan pide ${plan}. Si te salen ${reps}, el peso te queda liviano. Para en ${hi} y la próxima vez sube.`;
 }
 function dayTotals(w,d){
   let done = 0, total = 0;
@@ -320,7 +343,11 @@ function routineHTML(){
     }
     let hint = "";
     if (ex.type === "main"){
-      hint = `<p class="hint">${ex.note}${isDeload(w) ? "" : " Si no salen las reps con este peso, baja 2,5 kg."}</p>`;
+      const parts = [];
+      if (ex.side) parts.push(`<p class="today">Con barra de ${BAR} kg: ${fmt(p.fill)} de cada lado</p>`);
+      if (ex.note) parts.push(`<p class="hint">${ex.note}</p>`);
+      if (!isDeload(w)) parts.push(`<p class="hint">Si no salen las reps con este peso, baja ${ex.side ? "1,25 de cada lado" : "2,5 kg"}.</p>`);
+      hint = parts.join("");
     } else if (ex.type === "acc"){
       const t = todayFor(ex, w, d);
       const parts = [`<p class="today">${t.html}</p>`];
@@ -328,8 +355,9 @@ function routineHTML(){
       if (ex.note) parts.push(`<p class="hint">${ex.note}</p>`);
       hint = parts.join("");
     }
+    if (ex.type === "main" || ex.type === "acc") hint += `<p class="hint warn" data-live="${ex.id}">${esc(overMsg(ex, w, e.r))}</p>`;
     const fields = (ex.type === "main" || ex.type === "acc") ? `<div class="fields">
-        <label class="field"><input inputmode="decimal" data-ex="${ex.id}" data-f="kg" value="${esc(e.kg||"")}" placeholder="${p.kg ? fmt(p.kg) : ""}" aria-label="Peso de ${esc(ex.name)}"><span>peso</span></label>
+        <label class="field"><input inputmode="decimal" data-ex="${ex.id}" data-f="kg" value="${esc(e.kg||"")}" placeholder="${p.fill != null ? fmt(p.fill) : ""}" aria-label="Peso ${ex.side ? "de cada lado " : ""}de ${esc(ex.name)}"><span>${ex.side ? "por lado" : "peso"}</span></label>
         <label class="field"><input inputmode="numeric" data-ex="${ex.id}" data-f="r" value="${esc(e.r||"")}" aria-label="Repeticiones de la última serie de ${esc(ex.name)}"><span>reps</span></label>
       </div>` : "";
     list += `<article class="ex">
@@ -384,12 +412,14 @@ function guideHTML(){
     <p>"3 series de 12 a 15 reps" quiere decir 3 series. En cada una haces entre 12 y 15 repeticiones. No son kilos.</p>
     <p>Cada ejercicio te dice el peso de hoy, según lo que anotaste la semana anterior. Al tocar el primer círculo, la app llena el peso sola. Si usaste otro peso, cámbialo.</p>
     <p>El peso puede ser en kg o en barritas de la máquina. Usa siempre la misma unidad en cada ejercicio.</p>
+    <p>En sentadilla, hip thrust y peso muerto anota los kilos de cada lado de la barra. La app cuenta una barra de ${BAR} kg.</p>
+    <p>Haz las reps que dice el plan. Si te salen más, para ahí: el peso te queda liviano y la próxima vez subes.</p>
     <h3>Cuánto esfuerzo</h3>
     <p>Arriba de cada semana dice cuántas repeticiones más podrías hacer al terminar cada serie. Semana 1: 3 más. Semana 2: 2 más. Semana 3: 1 más. Semana 4: suave.</p>
     <h3>Sentadilla y hip thrust</h3>
     <p>Siguen bloques de 4 semanas. En las semanas 1 a 3 el peso sube 2,5 kg por semana. La semana 4 es descarga. El bloque 2 (semanas 5 a 8) usa menos reps y más peso. La app muestra el peso de cada semana. Si las reps no salen, baja 2,5 kg.</p>
     <h3>Todo lo demás</h3>
-    <p>Cada ejercicio tiene un rango, por ejemplo 8 a 12. Cuando completas todas las series con el número alto, sube lo mínimo posible (1 barrita o 1 a 2 kg) y vuelve al número bajo. La app te avisa con un ▲ y "Hoy: sube".</p>
+    <p>Cada ejercicio tiene un rango, por ejemplo 8 a 12. Cuando completas todas las series con el número alto, sube lo mínimo posible (1 barrita o 1 a 2 kg) y vuelve al número bajo. La app te avisa con un ▲ y te dice cuánto subir.</p>
     <h3>Descarga</h3>
     <p>En las semanas 4 y 8 haces la mitad de las series con 10% menos de peso. Sirve para recuperar.</p>
     <h3>Para que funcione</h3>
@@ -422,7 +452,7 @@ document.addEventListener("click", ev => {
     e.s[i] = e.s[i] ? 0 : 1; e.t = Date.now();
     if (e.s[i] && !e.kg){
       const p = prescription(ex, UI.week);
-      const fill = ex.type === "main" ? fmt(p.kg) : ex.type === "acc" ? todayFor(ex, UI.week, UI.day).fill : "";
+      const fill = ex.type === "main" ? fmt(p.fill) : ex.type === "acc" ? todayFor(ex, UI.week, UI.day).fill : "";
       if (fill){
         e.kg = String(fill);
         const inp = document.querySelector(`input[data-ex="${ex.id}"][data-f="kg"]`); if (inp) inp.value = e.kg;
@@ -461,6 +491,10 @@ document.addEventListener("input", ev => {
   const e = touch(inp.dataset.ex);
   e[inp.dataset.f] = inp.value.slice(0, 12); e.t = Date.now();
   changed();
+  if (inp.dataset.f === "r"){
+    const ex = R[UI.day].find(x => x.id === inp.dataset.ex), live = document.querySelector(`[data-live="${inp.dataset.ex}"]`);
+    if (ex && live) live.textContent = overMsg(ex, UI.week, e.r);
+  }
 });
 
 /* ---------- Export ---------- */
